@@ -67,7 +67,7 @@ const MeetingView = (props) => {
                                 </GridItem>
                                 <GridItem colSpan={{ base: 12, md: 6 }} >
                                     <Text fontSize="sm" fontWeight="bold" color={'blackAlpha.900'}> Created By </Text>
-                                    <Text>{data?.createdByName ? data?.createdByName : '-'}</Text>
+                                    <Text>{data?.createBy ? data.createBy.firstName : '-'}</Text>
                                 </GridItem>
                                 <GridItem colSpan={{ base: 12, md: 6 }} >
                                     <Text fontSize="sm" fontWeight="bold" color={'blackAlpha.900'}> Related </Text>

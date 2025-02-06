@@ -5,12 +5,13 @@ import MultiLeadModel from 'components/commonTableModel/MultiLeadModel';
 import Spinner from 'components/spinner/Spinner';
 import dayjs from 'dayjs';
 import { useFormik } from 'formik';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { LiaMousePointerSolid } from 'react-icons/lia';
 import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { MeetingSchema } from 'schema';
-import { getApi, postApi } from 'services/api';
+import { useNavigate } from 'react-router-dom';
+import { postApi } from 'services/api';
 
 const AddMeeting = (props) => {
     const { onClose, isOpen, setAction, from, fetchData, view } = props
@@ -21,7 +22,7 @@ const AddMeeting = (props) => {
     const [leadModelOpen, setLeadModel] = useState(false);
     const todayTime = new Date().toISOString().split('.')[0];
     const leadData = useSelector((state) => state?.leadData?.data);
-
+    const navigate = useNavigate();
 
     const user = JSON.parse(localStorage.getItem('user'))
 
@@ -43,22 +44,27 @@ const AddMeeting = (props) => {
         initialValues: initialValues,
         validationSchema: MeetingSchema,
         onSubmit: (values, { resetForm }) => {
-            
+            AddData();
         },
     });
-    const { errors, touched, values, handleBlur, handleChange, handleSubmit, setFieldValue } = formik
+    const { errors, touched, values, handleBlur, handleChange, handleSubmit, setFieldValue, resetForm } = formik
 
     const AddData = async () => {
-
+        try {
+            setIsLoding(true);
+            await postApi('api/meeting', values)
+            toast.success("Meeting created successfully")
+        } catch(e) {
+            console.error(e)
+            toast.error('Meeting creation failed')
+        } finally {
+            resetForm();
+            navigate('/metting')
+            fetchData()
+            setIsLoding(false)
+            onClose();
+        }
     };
-
-    const fetchAllData = async () => {
-        
-    }
-
-    useEffect(() => {
-
-    }, [props.id, values.related])
 
     const extractLabels = (selectedItems) => {
         return selectedItems.map((item) => item._id);
